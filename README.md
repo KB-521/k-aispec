@@ -148,3 +148,8 @@ openspec/
 - 自动扫描仓库并生成 `wiki/tech`
 - PRD 外部来源自动归档
 - 基于仓库实际结构生成更完整的 `AGENTS.md`
+
+## 仓库边界
+
+- `openspec/` 与 `.codex/skills/` 是要分发到其他项目的基座资产。
+- 当前仓库自己的实现方案、打包方案、发布方案放在 `docs/repo/`，不要写入 `openspec/sdd/`。
