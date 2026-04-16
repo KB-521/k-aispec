@@ -151,5 +151,44 @@ openspec/
 
 ## 仓库边界
 
-- `openspec/` 与 `.codex/skills/` 是要分发到其他项目的基座资产。
+- `openspec/`、`.codex/skills/`、`.agents/`、`.claude/` 是要分发到其他项目的基座资产。
 - 当前仓库自己的实现方案、打包方案、发布方案放在 `docs/repo/`，不要写入 `openspec/sdd/`。
+
+## OpenSpec CLI
+
+当前仓库已经补齐 npm 单源分发 CLI，固定包名为 `@king/openspec-cli`，固定命令名为 `openspec`。
+
+### 本地构建与校验
+
+```bash
+npm run build
+npm test
+npm run verify:pack
+```
+
+- `npm run build`：编译 CLI 并生成 `distribution/managed/` 与 `distribution/asset-manifest.json`
+- `npm test`：执行单元测试和基于 `npm pack` 产物的 E2E 测试
+- `npm run verify:pack`：校验 tarball 中包含 `bin/`、编译产物和托管资产，且不带入 `docs/repo/`
+
+### 命令示例
+
+推荐使用 `npx` 直接执行发布包：
+
+```bash
+npx @king/openspec-cli@latest init
+npx @king/openspec-cli@latest update
+npx @king/openspec-cli@latest uninstall
+```
+
+支持的关键参数：
+
+- `init`：`--scope`、`--profile`、`--force`、`--dry-run`
+- `update`：`--scope`、`--check`、`--force`、`--backup/--no-backup`、`--dry-run`
+- `uninstall`：`--scope`、`--backup/--no-backup`、`--force`、`--dry-run`
+
+### 默认行为
+
+- 默认托管范围包含 `.codex/skills/`、`.agents/`、`.claude/` 与 `openspec/`
+- `init` 遇到已有同名目录内容会拒绝接管，除非显式传入 `--force`
+- `update` 默认自动应用安全项，冲突项保留原文件并返回非 0
+- `uninstall` 默认把用户修改过的托管文件备份到 `.openspec/backups/<timestamp>/`

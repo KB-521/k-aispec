@@ -1,0 +1,25 @@
+{
+  "name": "@king/openspec-cli",
+  "version": "0.1.0",
+  "description": "Distribute OpenSpec assets from a single npm package.",
+  "license": "MIT",
+  "type": "commonjs",
+  "main": "dist/src/cli.js",
+  "bin": {
+    "openspec": "bin/openspec.js"
+  },
+  "files": [
+    "bin",
+    "dist",
+    "distribution",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json && node dist/scripts/build-asset-manifest.js",
+    "verify:pack": "npm run build && node dist/scripts/verify-pack.js",
+    "test": "npm run build && node --test dist/tests/unit/*.test.js dist/tests/e2e/*.test.js"
+  }
+}

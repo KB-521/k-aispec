@@ -6,11 +6,11 @@
 
 ## 文档定位
 
-本方案描述的是当前仓库如何把 `.codex/skills/` 与 `openspec/` 打包、分发到其他项目，因此属于仓库自身的工程实现方案，不进入 `openspec/` 分发资产目录。
+本方案描述的是当前仓库如何把 `.codex/skills/`、`.agents/`、`.claude/` 与 `openspec/` 打包、分发到其他项目，因此属于仓库自身的工程实现方案，不进入 `openspec/` 分发资产目录。
 
 ## 背景
 
-当前仓库已经具备可复用的 `openspec/` 资产和固定入口 `.codex/skills/`，但缺少一套可直接面向其他项目使用的安装与升级机制。
+当前仓库已经具备可复用的 `openspec/` 资产，以及 `.codex/skills/`、`.agents/`、`.claude/` 三套入口，但缺少一套可直接面向其他项目使用的安装与升级机制。
 
 这次不再追求多来源兼容，而是优先选择实现成本最低的方案，把可分发资产稳定同步到目标项目根目录，并支持安全更新与卸载。
 
@@ -28,7 +28,7 @@
 ## 目标
 
 1. 提供 `init`、`update`、`uninstall` 三个可用命令。
-2. 默认把 `.codex/skills/` 与 `openspec/` 同步到目标项目根目录。
+2. 默认把 `.codex/skills/`、`.agents/`、`.claude/` 与 `openspec/` 同步到目标项目根目录。
 3. `update` 基于上次安装状态做差异更新和冲突检测，而不是盲覆盖。
 4. `uninstall` 只删除 CLI 管理过的文件，避免误删用户自己的内容。
 5. 发布链路只维护一个 npm 包。
@@ -42,9 +42,9 @@
 
 ## 约束与假设
 
-1. 目标项目根目录允许新增 `.codex/skills/`、`openspec/`、`.openspec/`。
-2. 默认受控范围只包含 `.codex/skills/` 与 `openspec/`。
-3. `.agents/skills/`、`.claude/skills/` 若后续需要兼容，作为 profile 扩展，不进入首版默认范围。
+1. 目标项目根目录允许新增 `.codex/skills/`、`.agents/`、`.claude/`、`openspec/`、`.openspec/`。
+2. 默认受控范围包含 `.codex/skills/`、`.agents/`、`.claude/` 与 `openspec/`。
+3. `--profile` 先保留接口，当前与默认分发范围一致。
 4. 用户通过 `npx` 执行指定版本，或先把 CLI 安装为 devDependency 再执行。
 
 ## 推荐架构
@@ -52,7 +52,7 @@
 ```text
 目标项目
   -> openspec CLI(npm package)
-  -> 包内 assets/managed + asset-manifest.json
+  -> 包内 distribution/managed + asset-manifest.json
   -> DiffEngine(比较包内资产 / 本地 state / 当前文件)
   -> FileManager(写入、备份、删除)
   -> 项目根目录(.codex/skills + openspec)
@@ -65,17 +65,21 @@
 仓库中的源资产保持不变：
 
 - `.codex/skills/`
+- `.agents/`
+- `.claude/`
 - `openspec/`
 
 npm 包内只额外维护一套可执行资产目录：
 
-- `assets/managed/.codex/skills/`
-- `assets/managed/openspec/`
-- `assets/asset-manifest.json`
+- `distribution/managed/.codex/skills/`
+- `distribution/managed/.agents/`
+- `distribution/managed/.claude/`
+- `distribution/managed/openspec/`
+- `distribution/asset-manifest.json`
 
-发布时由构建脚本把当前仓库中的可分发资产拷贝到 `assets/managed/`，并生成 `asset-manifest.json`。
+发布时由构建脚本把当前仓库中的可分发资产拷贝到 `distribution/managed/`，并生成 `asset-manifest.json`。
 
-这样 CLI 运行时不需要再去网络下载 bundle，也不需要再解析其他来源，只需要读取当前 npm 包自身携带的资产。
+这样 CLI 运行时不需要再去网络下载 bundle，也不需要再解析其他来源，只需要读取当前 npm 包自身携带的分发目录。
 
 ### 2. CLI 包与目录建议
 
@@ -104,9 +108,11 @@ src/
     backup-manager.ts
     manifest.ts
     file-manager.ts
-assets/
+distribution/
   managed/
     .codex/skills/...
+    .agents/...
+    .claude/...
     openspec/...
   asset-manifest.json
 scripts/
@@ -141,7 +147,7 @@ scripts/
 
 说明：
 
-1. `path` 既是目标项目的写入路径，也是包内 `assets/managed/` 下的相对路径。
+1. `path` 既是目标项目的写入路径，也是包内 `distribution/managed/` 下的相对路径。
 2. CLI 运行时不再扫描整个包目录，而是直接依赖 manifest。
 3. `update` 和 `uninstall` 都基于这份 manifest 做精确管理。
 
@@ -162,6 +168,12 @@ scripts/
   "managedRoots": [".codex/skills", "openspec"],
   "files": {
     ".codex/skills/init/SKILL.md": {
+      "installedSha256": "..."
+    },
+    ".agents/skills/init/SKILL.md": {
+      "installedSha256": "..."
+    },
+    ".claude/skills/init/SKILL.md": {
       "installedSha256": "..."
     },
     "openspec/agent/phase-router.md": {
@@ -185,7 +197,7 @@ scripts/
 
 用途：
 
-- 首次安装 `.codex/skills/` 与 `openspec/`；
+- 首次安装 `.codex/skills/`、`.agents/`、`.claude/` 与 `openspec/`；
 - 若目标目录已有内容但未被 CLI 接管，则拒绝覆盖并提示用户确认。
 
 建议参数：
@@ -199,7 +211,7 @@ scripts/
 
 1. 读取包内 `asset-manifest.json`；
 2. 检测目标项目是否已存在冲突文件；
-3. 从 `assets/managed/` 写入文件；
+3. 从 `distribution/managed/` 写入文件；
 4. 生成 `.openspec/state.json`。
 
 #### `openspec update`
@@ -328,14 +340,14 @@ scripts/
 1. 建立 Node CLI 骨架；
 2. 支持 `init/update/uninstall`；
 3. 建立 `asset-manifest.json`、`state.json`、`diff engine`；
-4. 用当前 `.codex/skills/` 与 `openspec/` 生成 `assets/managed/`；
+4. 用当前 `.codex/skills/`、`.agents/`、`.claude/` 与 `openspec/` 生成 `distribution/managed/`；
 5. 用 `npm pack` 验证发布产物。
 
 ### Phase 2：扩展 profile 与兼容入口
 
-1. 按需支持 `.agents/skills/`、`.claude/skills/`；
-2. 支持 `--profile full-compat`；
-3. 视使用情况决定是否支持文件级选择安装。
+1. 细化 `.agents/` 与 `.claude/` 的局部 scope 语义；
+2. 视使用情况决定是否支持文件级选择安装；
+3. 若后续出现差异配置，再让 `--profile` 承担真正分流。
 
 ## 待确认项
 

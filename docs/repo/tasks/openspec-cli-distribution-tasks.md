@@ -108,19 +108,21 @@
 
 目标：
 
-- 把 `.codex/skills/` 与 `openspec/` 显式复制到 npm 包资产目录；
+- 把 `.codex/skills/`、`.agents/`、`.claude/` 与 `openspec/` 显式复制到 npm 包资产目录；
 - 生成可供运行时消费的 `asset-manifest.json`。
 
 输入：
 
 - 当前仓库中的 `.codex/skills/`
+- 当前仓库中的 `.agents/`
+- 当前仓库中的 `.claude/`
 - 当前仓库中的 `openspec/`
 
 输出：
 
-- `assets/managed/.codex/skills/`
-- `assets/managed/openspec/`
-- `assets/asset-manifest.json`
+- `distribution/managed/.codex/skills/`
+- `distribution/managed/openspec/`
+- `distribution/asset-manifest.json`
 - `scripts/build-asset-manifest.ts`
 
 验收标准：
@@ -175,7 +177,7 @@
 验收标准：
 
 - 支持 `--scope`、`--profile`、`--force`、`--dry-run`；
-- 能把 `.codex/skills/` 与 `openspec/` 写到目标项目根目录；
+- 能把 `.codex/skills/`、`.agents/`、`.claude/` 与 `openspec/` 写到目标项目根目录；
 - 首次安装完成后生成 `.openspec/state.json`；
 - 遇到冲突文件时能中止并给出明确提示。
 
@@ -278,7 +280,7 @@
 
 输入：
 
-- `assets/managed/`
+- `distribution/managed/`
 - `asset-manifest.json`
 - `package.json`
 
@@ -290,7 +292,7 @@
 
 验收标准：
 
-- `npm pack` 产物中包含 `bin/`、编译后 CLI、`assets/managed/`、`asset-manifest.json`；
+- `npm pack` 产物中包含 `bin/`、编译后 CLI、`distribution/managed/`、`asset-manifest.json`；
 - 不会把 `docs/repo/` 等非分发资产带入包中；
 - 发布前检查可重复执行。
 

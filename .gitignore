@@ -1,2 +1,9 @@
 .DS_Store
 **/.DS_Store
+.npm-cache/
+dist/
+node_modules/
+*.tgz
+distribution/managed/
+distribution/asset-manifest.json
+assets/

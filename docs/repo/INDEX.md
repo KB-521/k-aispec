@@ -13,3 +13,9 @@
 | Task ID | Title | Path |
 | --- | --- | --- |
 | `TASK-GEN-20260415-001` | OpenSpec CLI npm 单源分发任务拆分 | `docs/repo/tasks/openspec-cli-distribution-tasks.md` |
+
+## Release Docs
+
+| Title | Path |
+| --- | --- |
+| OpenSpec CLI 发布与使用说明 | `docs/repo/openspec-cli-release.md` |
