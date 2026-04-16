@@ -2,7 +2,7 @@
 
 本目录用于沉淀可按需读取的技术事实，避免任务执行时反复盲扫代码库。
 
-- 状态：初始化骨架
+- 状态：已按当前仓库结构初始化
 - 原则：只记录已验证事实；默认建议与仓库事实分开写。
 
 ## 维护规则
@@ -16,15 +16,16 @@
 
 | 模块 | 源码目录 | 文档路径 | 说明 |
 | --- | --- | --- | --- |
-| 待初始化 | 待扫描 | 待生成 | 运行 `init` 后按仓库实际模块写入。 |
+| OpenSpec CLI | `bin/`, `src/`, `scripts/`, `tests/`, `package.json`, `tsconfig.json` | `openspec/wiki/tech/openspec-cli.md` | npm CLI、构建脚本与测试资产。 |
+| OpenSpec 源资产 | `.codex/skills/`, `openspec/` | `openspec/wiki/tech/openspec-assets.md` | 要被 CLI 打包和分发的固定入口与方法论资产。 |
 
 ## 默认共享技术资产
 
 | 资产 | 建议文档路径 | 说明 |
 | --- | --- | --- |
-| API 基线 | `openspec/wiki/tech/backend-api.md` | 记录 Python 后端当前接口契约。 |
-| 数据模型基线 | `openspec/wiki/tech/backend-data-model.md` | 记录实体、表结构或模型边界。 |
-| 前端架构概览 | `openspec/wiki/tech/frontend-overview.md` | 记录应用边界、状态流和目录职责。 |
+| API 基线 | `openspec/wiki/tech/backend-api.md` | 当前仓库无独立 Python 后端 API，文档用于显式记录“不适用”事实。 |
+| 数据模型基线 | `openspec/wiki/tech/backend-data-model.md` | 当前仓库无后端持久化模型，文档用于显式记录“不适用”事实。 |
+| 前端架构概览 | `openspec/wiki/tech/frontend-overview.md` | 当前仓库无前端应用，文档用于显式记录“不适用”事实。 |
 
 ## 使用建议
 

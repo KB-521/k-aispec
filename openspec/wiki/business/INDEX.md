@@ -2,7 +2,7 @@
 
 本目录用于沉淀业务目标、流程、规则与边界事实。
 
-- 状态：初始化骨架
+- 状态：已按当前仓库能力初始化
 - 原则：优先沉淀能直接影响需求判断、设计和实现的业务事实。
 
 ## 维护规则
@@ -16,7 +16,7 @@
 
 | 业务域 | 入口 | 文档路径 | 核心关注 |
 | --- | --- | --- | --- |
-| 待初始化 | 待扫描 | 待生成 | 运行 `init` 后按业务域补齐。 |
+| OpenSpec 基座分发 | `README.md`、`docs/repo/openspec-cli-distribution-design.md`、`src/cli.ts` | `openspec/wiki/business/openspec-distribution.md` | 分发目标、生命周期命令、托管边界和失败行为。 |
 
 ## 使用建议
 
